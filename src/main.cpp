@@ -1,8 +1,11 @@
 #include <Arduino.h>
 #include <SPI.h>
+#include <stdlib.h>
+#include <time.h>
 
 // Make sure the header file exists at the correct path or update the path below if needed
-#include "major_arcana_chariot.h"
+
+#include "../bitmaps/tarot_cards.h"
 //IO settings
 int BUSY_Pin = D5; 
 int RES_Pin = D0; 
@@ -46,6 +49,7 @@ void lcd_chkstatus(void);
 
 
 void setup() {
+   Serial.begin(115200);
    pinMode(BUSY_Pin, INPUT); 
    pinMode(RES_Pin, OUTPUT);  
    pinMode(DC_Pin, OUTPUT);    
@@ -71,24 +75,15 @@ void loop() {
     //   EPD_sleep();//EPD_sleep,Sleep instruction is necessary, please do not delete!!!
     //   delay(15000); //5s  
     // }
-
+    int index = random(156);
     EPD_init(); //EPD init
-    PIC_display(gImage_major_arcana_chariot);//EPD_picture1
+    PIC_display(gImage_tarot_cards[index]);//EPD_picture1
     EPD_sleep();
-    delay(5000);
-    // EPD_init(); //EPD init
+    delay(3000);
+    Serial.println("Random Tarot Card Displayed: " + String(index));
+    // EPD_init();
     // Display_All_White();
     // EPD_sleep();//EPD_sleep,Sleep instruction is necessary, please do not delete!!!
-
-    unsigned char temp[9472] = {};
-    for(int i = 0; i < 9472; i++) {
-      temp[i] = gImage_major_arcana_chariot[i];
-    }
-    EPD_init(); //EPD init
-    PIC_display(temp);
-    EPD_sleep(); //EPD_sleep,Sleep instruction is necessary, please do not delete!!!
-
-    delay(15000);  // The program stops here   
   
 }
 
