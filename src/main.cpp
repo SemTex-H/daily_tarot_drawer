@@ -33,6 +33,7 @@ int CS_Pin = D1;
 #define Gate_BITS   296
 #define ALLSCREEN_BYTES   Source_BITS*Gate_BITS/4
 
+bool another_flag = false;
 ////////FUNCTION//////   
 void SPI_Write(unsigned char value);
 void EPD_W21_WriteCMD(unsigned char command);
@@ -53,7 +54,9 @@ void setup() {
    pinMode(BUSY_Pin, INPUT); 
    pinMode(RES_Pin, OUTPUT);  
    pinMode(DC_Pin, OUTPUT);    
-   pinMode(CS_Pin, OUTPUT);    
+   pinMode(CS_Pin, OUTPUT);
+
+   pinMode(D7, INPUT_PULLUP); //change image
    //SPI
    SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0)); 
    SPI.begin ();  
@@ -79,8 +82,16 @@ void loop() {
     EPD_init(); //EPD init
     PIC_display(gImage_tarot_cards[index]);//EPD_picture1
     EPD_sleep();
-    delay(3000);
     Serial.println("Random Tarot Card Displayed: " + String(index));
+    
+    while(!another_flag){
+      if(digitalRead(D7) == LOW){
+        another_flag = true; // Set the flag to true to exit the loop
+        Serial.println("Button pressed, exiting loop.");
+      }
+    }
+    another_flag = false; // Reset the flag for the next loop
+
     // EPD_init();
     // Display_All_White();
     // EPD_sleep();//EPD_sleep,Sleep instruction is necessary, please do not delete!!!
